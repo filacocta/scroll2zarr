@@ -256,14 +256,14 @@ def tifs2zarr(tiffdir, zarrdir, chunk_size, obytes=0, slices=None, maxgb=None):
     # nb of chunks in y direction that fit inside of max_gb
     chy = cy // chunk_size + 1
     if maxgb is not None:
-        maxy = int((maxgb*10**9)/(cx*chunk_size*dt0.itemsize))
+        maxy = int((maxgb*10**9)/(cx*chunk_size*np.dtype(otype).itemsize))
         chy = maxy // chunk_size
         chy = max(1, chy)
 
     # nb of y chunk groups
     ncgy = cy // (chunk_size*chy) + 1
     print("chy, ncgy", chy, ncgy)
-    buf = np.zeros((chunk_size, min(cy, chy*chunk_size), cx), dtype=dt0)
+    buf = np.zeros((chunk_size, min(cy, chy*chunk_size), cx), dtype=otype)
     for icy in range(ncgy):
         ys = icy*chy*chunk_size
         ye = ys+chy*chunk_size
